@@ -8,7 +8,7 @@ The Haiku with SenseME fan is a WiFi connected fan and installable light. This c
 There are three senseme.py files that must be installed in the config/custom_components directory. Note the location of the three senseme.py files in their respective folders (fan/ and light/) is important. The SenseMe library will be automatically installed by Home Assistant.
 
 ### Configuration
-The Haiku with SenseME fan component will automatically discover and create a fan and light (if installed) for each discovered fan. Setting ```max_number_fans``` to the number of Haiku fans on your network will speed up the discovery process but is not required. If ```include:``` is specified, discovered fans with a matching name will be added. If ```exclude``` is specified, discovered fans with a matching name will NOT be added. If both ```include:``` and ```exclude``` are specified, only ```include:``` will be honored. If neither ```include:``` and ```exclude``` are specified, all auto-detected fans will be added.
+The Haiku with SenseME fan component will automatically discover and create a fan and light (if installed) for each discovered fan. Setting ```max_number_fans:``` to the number of Haiku fans on your network will speed up the discovery process but is not required. If ```include:``` is specified, discovered fans with a matching name will be added. If ```exclude:``` is specified, discovered fans with a matching name will NOT be added. If both ```include:``` and ```exclude:``` are specified, only ```include:``` will be honored. If neither ```include:``` and ```exclude:``` are specified, all auto-detected fans will be added.
 
 For included fans you can now specify a ```friendly_name``` to use instead of ```name``` in Home Assistant. This is handy for grouped fans. Controlling any fan in a group will affect all fans of that group. Default value is the same as ```name ```. Also new in the include section is the ```has_light``` boolean which when ```true``` will add a light component along with the fan. The default for ```has_light``` is ```true```. The included fan section must have a ```name ``` variable and it must must match the name in the Haiku app.
 ```yaml
@@ -35,13 +35,12 @@ In my Home Automation setup I use lots of SmartHome [Insteon](https://www.smarth
 
 The custom components are mqtt_sharehost and mqtt_shareclient. The host Home Assistant instance is the one that already has the entities you want to share. Thus the client Home Assistant instance is one the entities are shared with. As shown in the diagram below the mqtt_sharehost is on right side and it is sharing three enities. Each entity has it's own state topic on the MQTT server and they are published with the retain flag. This prevents the shared entities from disappearing after a restart. If any of the entities are ISY994 devices then "isy994_control" events are published to the event topic. On the left side the mqtt_shareclient is listening to all state topic using topic wildcards and isy994_controls event from the mqtt_sharehost. The host also publishes control "call_service" events back to the mqtt_sharehost using the control topic. Any number of mqtt_shareclient's can listen to a single mqtt_sharehost. It is also important that entity_ids be unique across all Home Assistant instances.
 
-<img src="meta/MQTT-Diagram.png" width="600">
+<img src="MQTT-Diagram.png" width="600">
 
 Although these components primarily support ISY994 switch, light, fan components they will work with many other components like sensor, binary_sensor. Give them a try.
 
 ### Configuration
-For the mqtt_sharehost you must specify the MQTT ```base_topic```. The rest of the configuration is to specify the entities to share on the MQTT server. Look at the Include/exclude section of the [MQTT Statestream](https://www.home-assistant.io/components/mqtt_statestream/) component for details on how to configure this part of the configuration.
-
+For the mqtt_sharehost you must specify the MQTT ```base_topic:```. The rest of the configuration is to specify the entities to share on the MQTT server. Look at the Include/exclude section of the [MQTT Statestream](https://www.home-assistant.io/components/mqtt_statestream/) component for details on how to configure this part of the configuration.
 ```yaml
 mqtt_sharehost:
   base_topic: hass_share
@@ -51,7 +50,7 @@ mqtt_sharehost:
       - switch.studio_christmas_lights
 ```
 
-For the mqtt_shareclient all you need to do is specify MQTT ```base_topic``` and it will automatically pick all shared entities.
+For the mqtt_shareclient all you need to do is specify MQTT ```base_topic:``` and it will automatically pick all shared entities.
 ```yaml
 mqtt_shareclient:
   base_topic: hass_share
