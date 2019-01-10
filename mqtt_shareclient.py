@@ -103,7 +103,7 @@ def async_setup(hass, config):
             # _LOGGER.warning("Publish local control event '{}' data={}".format(
             #     event.event_type, event_info))
 
-    # listen for local events if you are going to publish them.
+    # listen for local events.
     hass.bus.async_listen(MATCH_ALL, _control_publisher)
 
     @callback

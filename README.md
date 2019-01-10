@@ -55,3 +55,6 @@ For the mqtt_shareclient all you need to do is specify MQTT ```base_topic:``` an
 mqtt_shareclient:
   base_topic: hass_share
 ```
+
+### Problems
+* No known issues.
