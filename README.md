@@ -2,10 +2,10 @@
 All my custom components for Home Assistant are in this repository.
 
 ## Custom Haiku with SenseME fan and light
-The Haiku with SenseME fan is a WiFi connected fan and installable light. This custom component uses TomFaulkner's [SenseMe](https://github.com/TomFaulkner/SenseMe) library to communicate with the fan.
+The Haiku with SenseME fan is a WiFi connected fan and installable light. This custom component uses TomFaulkner's [SenseMe](https://github.com/TomFaulkner/SenseMe) library to communicate with the fan. This library will be automatically installed by Home Assistant.
 
 ### Installation
-There are three senseme.py files that must be installed in the config/custom_components directory. Note the location of the three senseme.py files in their respective folders (fan/ and light/) is important. The SenseMe library will be automatically installed by Home Assistant.
+Requires Home Assistant release 0.88 or above. All you have to do to use this component is copy the senseme directory to your config/custom_components directory.
 
 ### Configuration
 The Haiku with SenseME fan component will automatically discover and create a fan and light (if installed) for each discovered fan. Setting ```max_number_fans:``` to the number of Haiku fans on your network will speed up the discovery process but is not required. If ```include:``` is specified, discovered fans with a matching name will be added. If ```exclude:``` is specified, discovered fans with a matching name will NOT be added. If both ```include:``` and ```exclude:``` are specified, only ```include:``` will be honored. If neither ```include:``` and ```exclude:``` are specified, all auto-detected fans will be added.
