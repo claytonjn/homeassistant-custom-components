@@ -66,20 +66,32 @@ def setup(hass, config):
     if len(include_list) > 0:
         # add only included fans
         for device in devices:
+            # _LOGGER.warning("Discovered fan: '%s'." % (device.name))
             for include in include_list:
                 if include['name'] == device.name:
+                    # _LOGGER.warning("Match include fan: '%s'." % (device.name))
                     newDevice = SenseMe(ip=device.ip, name=device.name,
                                         monitor_frequency=SENSEME_UPDATE_DELAY,
                                         monitor=True)
-                    hubs.append(SenseMeHub(newDevice, include['friendly_name'],
+                    hubs.append(SenseMeHub(newDevice,
+                                           include.get('friendly_name'),
                                            include['has_light']))
-                    _LOGGER.debug("Added included fan: '%s', %s." %
-                                  (device.name, "with light" if
-                                  include['has_light'] else "without light"))
-        # make sure all included fans exist
-        for hub in hubs:
-            if not any(include['name'] == hub.name for include in include_list):
-                _LOGGER.error("Included fan not found: '%s'." % hub.name)
+                    friendly_name = include.get('friendly_name')
+                    if not friendly_name:
+                        friendly_name = device.name
+                    _LOGGER.info("Added included fan: '%s' as '%s' %s." %
+                                 (device.name, friendly_name, "with light" if
+                                 include['has_light'] else "without light"))
+        # make sure all included fans were discovered
+        for include in include_list:
+            discovered = False
+            for hub in hubs:
+                if include['name'] == hub.name:
+                    discovered = True
+                    break
+            if discovered == False:
+                _LOGGER.error("Included fan not found: '%s'." %
+                              (include['name']))
     else:
         # add only not excluded fans
         for device in devices:
