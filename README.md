@@ -8,7 +8,7 @@ The Haiku with SenseME fan is a WiFi connected fan and installable light. This c
 Requires Home Assistant release 0.88 or above. All you have to do to use this component is copy the senseme directory to your config/custom_components directory.
 
 ### Configuration
-The Haiku with SenseME fan component will automatically discover and create a fan and light (if installed) for each discovered fan. Setting ```max_number_fans:``` to the number of Haiku fans on your network will speed up the discovery process but is not required. If ```include:``` is specified, discovered fans with a matching name will be added. If ```exclude:``` is specified, discovered fans with a matching name will NOT be added. If both ```include:``` and ```exclude:``` are specified, only ```include:``` will be honored. If neither ```include:``` and ```exclude:``` are specified, all auto-detected fans will be added.
+The Haiku with SenseME fan component will automatically discover and create a fan and light for each discovered fan. See next paragraph to prevent the light from being added if you don't have one. Setting ```max_number_fans:``` to the number of Haiku fans on your network will speed up the discovery process but is not required. If ```include:``` is specified, discovered fans with a matching name will be added. If ```exclude:``` is specified, discovered fans with a matching name will NOT be added. If both ```include:``` and ```exclude:``` are specified, only ```include:``` will be honored. If neither ```include:``` and ```exclude:``` are specified, all auto-detected fans will be added.
 
 For included fans you can now specify a ```friendly_name``` to use instead of ```name``` in Home Assistant. This is handy for grouped fans. Controlling any fan in a group will affect all fans of that group. Default value is the same as ```name ```. Also new in the include section is the ```has_light``` boolean which when ```true``` will add a light component along with the fan. The default for ```has_light``` is ```true```. The included fan section must have a ```name ``` variable and it must must match the name in the Haiku app.
 ```yaml
@@ -19,7 +19,7 @@ senseme:
   include:
     - name: "Studio Vault Fan"
       friendly_name: "Studio Fan"
-      has_light: true
+      has_light: false
     - name: "Family Room Fan"
   # or use exclude to prevent specific auto-detected fan
   exclude:
