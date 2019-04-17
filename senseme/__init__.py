@@ -137,7 +137,7 @@ class SenseMeHub(object):
         """Initialize the data object."""
         self._device = device
         self._fan_on = None
-        self._fan_speed = None
+        self._fan_speed = '4'
         self._whoosh_on = None
         self._fan_direction = None
         self._light_on = None
