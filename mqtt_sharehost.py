@@ -65,9 +65,9 @@ def async_setup(hass, config):
                                      pub_exclude.get(CONF_ENTITIES, []))
 
     @callback
-    def _control_listener(topic, payload, qos):
+    def _control_listener(msg):
         """Receive remote control events from mqtt_shareclient."""
-        # split = topic.split('/')
+        # split = msg.topic.split('/')
         # domain = split[1]
         # object_id = split[2]
         # entity_id = domain + '.' + object_id
@@ -75,19 +75,19 @@ def async_setup(hass, config):
         # if not publish_filter(entity_id):
         #     return
         # process payload as JSON
-        event = json.loads(payload)
+        event = json.loads(msg.payload)
         # # must be a call_service event_type
         # #  not really necessary because only call_service events are published
         # if event.get('event_type') != EVENT_CALL_SERVICE:
         #     return
-        event_type = event.get('event_type')
         event_data = event.get('event_data')
         domain = event_data.get(ATTR_DOMAIN)
         service = event_data.get(ATTR_SERVICE)
         data = event_data.get(ATTR_SERVICE_DATA)
         hass.async_add_job(hass.services.async_call(domain, service, data))
+        # event_type = event.get('event_type')
         # _LOGGER.warning("Received remote {} event, data={}".format(
-        #  event_type, event_data))
+        #                 event_type, event_data))
 
     # subscribe to all control topics
     yield from mqtt.async_subscribe(control_topic, _control_listener)

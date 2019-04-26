@@ -53,15 +53,15 @@ def async_setup(hass, config):
     state_topic = base_topic + '+/+/state'
 
     @callback
-    def _state_listener(topic, payload, qos):
+    def _state_listener(msg):
         """Receive remote states from mqtt_sharehost."""
         # get the entity_id from the topic
-        split = topic.split('/')
+        split = msg.topic.split('/')
         domain = split[1]
         object_id = split[2]
         entity_id = domain + '.' + object_id
         # process payload as JSON
-        values = json.loads(payload)
+        values = json.loads(msg.payload)
         state = values.get(ATTR_STATE)
         values.pop(ATTR_STATE)          # state is not an attribute
         entities[entity_id] = True      # this was a remote status update
@@ -107,10 +107,10 @@ def async_setup(hass, config):
     hass.bus.async_listen(MATCH_ALL, _control_publisher)
 
     @callback
-    def _event_listener(topic, payload, qos):
+    def _event_listener(msg):
         """Receive remote isy994_control events from mqtt_shareclient."""
         # process payload as JSON
-        event = json.loads(payload)
+        event = json.loads(msg.payload)
         event_type = event.get('event_type')
         event_data = event.get('event_data')
         # fire the event locally (origin is remote)
