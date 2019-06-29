@@ -1,13 +1,4 @@
-"""
-Acts as a client to configured entities on MQTT. State changes are
-subscribed and call_service events are published. This version also receives
-isy994_control events for included entities.
-
-Primarily intended to share entities between multiple Home Assistant instances.
-
-For more details about this component, please refer to the documentation at
-https://github.com/mikelawrence/homeassistant-custom-components
-"""
+"""The MQTT Shareclient component."""
 import asyncio
 import logging
 import json
@@ -20,14 +11,9 @@ from homeassistant.components.mqtt import (valid_publish_topic)
 from homeassistant.helpers.json import JSONEncoder
 import homeassistant.helpers.config_validation as cv
 
-CONF_BASE_TOPIC = 'base_topic'
-#CONF_CONTROL_TOPIC = 'control'      # not retained on MQTT server, to host
-#CONF_STATE_TOPIC = 'state'          # retained on MQTT server, from host
-#CONF_EVENT_TOPIC = 'event'          # not retained on MQTT server, from host
-
-DEPENDENCIES = ['mqtt']
-
 DOMAIN = 'mqtt_shareclient'
+
+CONF_BASE_TOPIC = 'base_topic'
 
 CONFIG_SCHEMA = vol.Schema({
     DOMAIN: vol.Schema({
@@ -50,7 +36,7 @@ def async_setup(hass, config):
         base_topic = base_topic + '/'
     event_topic = base_topic + 'event'
     control_topic = base_topic + 'control'
-    state_topic = base_topic + '+/+/state'
+    state_topic = base_topic + "+/+/state"
 
     @callback
     def _state_listener(msg):
@@ -66,8 +52,8 @@ def async_setup(hass, config):
         values.pop(ATTR_STATE)          # state is not an attribute
         entities[entity_id] = True      # this was a remote status update
         hass.states.async_set(entity_id, state, values)
-        # _LOGGER.warning("Received state for '{}', state={}, attributes={}".
-        #     format(entity_id, state, values))
+        # _LOGGER.debug("Received state for '%s', state=%s, attributes=%s",
+        #     entity_id, state, values)
 
     # subscribe to all state topics
     yield from mqtt.async_subscribe(state_topic, _state_listener)
@@ -99,9 +85,10 @@ def async_setup(hass, config):
                           'event_data': event.data}
             payload = json.dumps(event_info, cls=JSONEncoder)
             # publish the topic, retain should be off for events
-            hass.components.mqtt.async_publish(control_topic, payload, 0, False)
-            # _LOGGER.warning("Publish local control event '{}' data={}".format(
-            #     event.event_type, event_info))
+            hass.components.mqtt.async_publish(control_topic, payload, 0, 
+                False)
+            # _LOGGER.debug("Publish local control event '%s' data=%s",
+            #     event.event_type, event_info)
 
     # listen for local events.
     hass.bus.async_listen(MATCH_ALL, _control_publisher)
@@ -116,8 +103,8 @@ def async_setup(hass, config):
         # fire the event locally (origin is remote)
         hass.bus.async_fire(event_type, event_data=event_data,
                             origin=EventOrigin.remote)
-        # _LOGGER.warning("Received remote event '{}', data={}".format(event_type,
-        #     event_data))
+        # _LOGGER.debug("Received remote event '%s', data=%s",
+        #     event_type, event_data)
 
     # subscribe to all control topics
     yield from mqtt.async_subscribe(event_topic, _event_listener)

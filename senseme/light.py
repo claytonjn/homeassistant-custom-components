@@ -1,9 +1,4 @@
-"""
-Support for Haiku with SenseME ceiling light.
-
-For more details about this platform, please refer to the documentation at
-https://github.com/mikelawrence/homeassistant-custom-components
-"""
+"""Support for Big Ass Fans with SenseME light."""
 import logging
 import socket
 from datetime import timedelta

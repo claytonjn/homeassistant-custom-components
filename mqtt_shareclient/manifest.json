@@ -1,0 +1,8 @@
+{
+    "domain": "mqtt_shareclient",
+    "name": "MQTT Sharehclient",
+    "documentation": "https://github.com/mikelawrence/homeassistant-custom-components",
+    "dependencies": ["mqtt"],
+    "codeowners": [],
+    "requirements": []
+}

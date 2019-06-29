@@ -1,12 +1,4 @@
-"""
-Hosts a set of configured entities on MQTT. Publishes state changes and
-isy994_control events. Listens to call_service events.
-
-Primarily intended to share entities between multiple Home Assistant instances.
-
-For more details about this component, please refer to the documentation at
-https://github.com/mikelawrence/homeassistant-custom-components
-"""
+"""The MQTT Sharehost component."""
 import asyncio
 import logging
 import json
@@ -22,12 +14,9 @@ from homeassistant.helpers.event import async_track_state_change
 from homeassistant.helpers.json import JSONEncoder
 import homeassistant.helpers.config_validation as cv
 
+DOMAIN = 'mqtt_sharehost'
 
 CONF_BASE_TOPIC = 'base_topic'
-
-DEPENDENCIES = ['mqtt']
-
-DOMAIN = 'mqtt_sharehost'
 
 CONFIG_SCHEMA = vol.Schema({
     DOMAIN: vol.Schema({
@@ -67,27 +56,15 @@ def async_setup(hass, config):
     @callback
     def _control_listener(msg):
         """Receive remote control events from mqtt_shareclient."""
-        # split = msg.topic.split('/')
-        # domain = split[1]
-        # object_id = split[2]
-        # entity_id = domain + '.' + object_id
-        # must be an entity we are configured to listen for commands
-        # if not publish_filter(entity_id):
-        #     return
         # process payload as JSON
         event = json.loads(msg.payload)
-        # # must be a call_service event_type
-        # #  not really necessary because only call_service events are published
-        # if event.get('event_type') != EVENT_CALL_SERVICE:
-        #     return
         event_data = event.get('event_data')
         domain = event_data.get(ATTR_DOMAIN)
         service = event_data.get(ATTR_SERVICE)
         data = event_data.get(ATTR_SERVICE_DATA)
         hass.async_add_job(hass.services.async_call(domain, service, data))
-        # event_type = event.get('event_type')
-        # _LOGGER.warning("Received remote {} event, data={}".format(
-        #                 event_type, event_data))
+        # _LOGGER.warning("Received remote %s event, data=%s", 
+        #     event.get('event_type'), event_data))
 
     # subscribe to all control topics
     yield from mqtt.async_subscribe(control_topic, _control_listener)
@@ -109,8 +86,8 @@ def async_setup(hass, config):
         topic = base_topic + entity_id.replace('.', '/') + '/state'
         # publish the topic, retain should be on for state topics
         hass.components.mqtt.async_publish(topic, payload, 0, True)
-        # _LOGGER.warning("Published state for '{}', state={}".format(
-        #   entity_id, payload))
+        # _LOGGER.warning("Published state for '%s', state=%s", 
+        #     entity_id, payload)
 
     # asynchronous receive state changes
     async_track_state_change(hass, MATCH_ALL, _state_publisher)
@@ -133,7 +110,7 @@ def async_setup(hass, config):
         payload = json.dumps(event_info, cls=JSONEncoder)
         # publish the topic, retain should be off for events
         hass.components.mqtt.async_publish(event_topic, payload, 0, False)
-        # _LOGGER.warning("Publish local event '{}' data={}".format(
+        # _LOGGER.warning("Publish local event '%s' data=%s", 
         #     event.event_type, event.data))
 
     # listen for local events if you are going to publish them.

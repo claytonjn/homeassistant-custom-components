@@ -1,0 +1,8 @@
+{
+    "domain": "senseme",
+    "name": "Big Ass Fans SenseME",
+    "documentation": "https://github.com/mikelawrence/homeassistant-custom-components",
+    "dependencies": ["mqtt"],
+    "codeowners": [],
+    "requirements": ["SenseMe==0.1.5"]
+}

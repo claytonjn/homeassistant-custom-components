@@ -1,0 +1,8 @@
+{
+    "domain": "mqtt_sharehost",
+    "name": "MQTT Sharehost",
+    "documentation": "https://github.com/mikelawrence/homeassistant-custom-components",
+    "dependencies": ["mqtt"],
+    "codeowners": [],
+    "requirements": []
+}
