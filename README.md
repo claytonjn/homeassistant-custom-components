@@ -50,7 +50,7 @@ Although these components primarily support ISY994 switch, light, fan components
 
 ### Installation
 
-Requires Home Assistant release 0.92.0 or above. All you have to do to use this component is copy the mqtt_shareclient and mqtt_sharehost directories to your config/custom_components directory.
+All you have to do to use this component is copy the mqtt_shareclient and mqtt_sharehost directories to your config/custom_components directory. Requires Home Assistant release 0.92.0 or above. MQTT must also be enabled.
 
 ### Configuration
 
